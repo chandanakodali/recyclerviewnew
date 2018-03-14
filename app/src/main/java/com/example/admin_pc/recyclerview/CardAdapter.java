@@ -1,16 +1,19 @@
 package com.example.admin_pc.recyclerview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin_pc.recyclerview.Card;
 import com.example.admin_pc.recyclerview.R;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -21,6 +24,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     private Context mCtx;
     private List<Card> cardList;
+    private OnItemClickListener mListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
+    }
 
     public CardAdapter(Context mCtx, List<Card> cardList) {
         this.mCtx = mCtx;
@@ -33,7 +45,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
         LayoutInflater inflater = LayoutInflater.from(mCtx);
         View view = inflater.inflate(R.layout.list_layout, null);
-        CardViewHolder holder = new CardViewHolder(view);
+        CardViewHolder holder = new CardViewHolder(view, mListener);
         return holder;
     }
 
@@ -56,11 +68,26 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
         TextView textViewName , textViewDesc;
 
-        public CardViewHolder(View itemView) {
+        public CardViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
 
             textViewName = itemView.findViewById(R.id.textViewName);
             textViewDesc = itemView.findViewById(R.id.textViewDesc);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                    if(listener != null) {
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(position);
+                            //Intent intent = new Intent(mCtx, projectScreen.class);
+                            //intent.putExtra("project-name", (Serializable) cardList.get());
+                            //intent.putExtra("project-description", (Serializable) cardList.get());
+                        }
+                    }
+                }
+            });
         }
     }
 }

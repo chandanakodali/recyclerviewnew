@@ -1,9 +1,11 @@
 package com.example.admin_pc.recyclerview;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
 
+    private static final String TAG = "MyActivity";
     RecyclerView recyclerView;
     CardAdapter adapter;
 
@@ -20,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         cardList = new ArrayList<>();
 
@@ -47,8 +51,21 @@ public class MainActivity extends AppCompatActivity {
                 )
         );
 
+
+
         adapter = new CardAdapter(this, cardList);
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new CardAdapter.OnItemClickListener() {
+            @Override
+           public void onItemClick(int position) {
+
+                Intent intent = new Intent(MainActivity.this, projectScreen.class);
+                intent.putExtra("project-name", cardList.get(position).getPname());
+                intent.putExtra("project-description", cardList.get(position).getPdescription());
+                startActivity(intent);
+            }
+        });
 
     }
 }
